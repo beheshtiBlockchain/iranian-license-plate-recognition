@@ -10,19 +10,19 @@ from tqdm import tqdm
 
 # Characters of Letters and Numbers in Plates
 numbers = [str(i) for i in range(0, 10)]
-# letters = ['ALEF', 'BE', 'PE', 'TE', 'SE', 'JIM', 'CHE', 'HE', 'KHE', 'DAL', 'ZAL', 'RE', 'ZE', 'ZHE', 'SIN','SHIN', 'SAD', 'ZAD', 'TA', 'ZA', 'EIN', 'GHEIN', 'FE', 'GHAF', 'KAF', 'GAF', 'LAM', 'MIM', 'NON', 'VAV', 'HA', 'YE']
-# letters = ['AA', 'BA', 'PA', 'TA', 'SA', 'JA', 'CA', 'HA', 'KB', 'DA', 'ZA', 'RA', 'ZB', 'ZE', 'SB','SH', 'SC', 'ZC', 'TB', 'ZD', 'EA', 'GA', 'FA', 'GB', 'KA', 'GC', 'LA', 'MA', 'NA', 'VA', 'HB', 'YA']
+letters = ['ALEF', 'BE', 'PE', 'TE', 'SE', 'JIM', 'CHE', 'HE', 'KHE', 'DAL', 'ZAL', 'RE', 'ZE', 'ZHE', 'SIN','SHIN', 'SAD', 'ZAD', 'TA', 'ZA', 'EIN', 'GHEIN', 'FE', 'GHAF', 'KAF', 'GAF', 'LAM', 'MIM', 'NON', 'VAV', 'HA', 'YE']
+#letters = ['AA', 'BA', 'PA', 'TA', 'SA', 'JA', 'CA', 'HA', 'KB', 'DA', 'ZA', 'RA', 'ZB', 'ZE', 'SB','SH', 'SC', 'ZC', 'TB', 'ZD', 'EA', 'GA', 'FA', 'GB', 'KA', 'GC', 'LA', 'MA', 'NA', 'VA', 'HB', 'YA']
 
 # Fonts and Templates
-# fonts = [font.split('.')[0] for font in os.listdir('../Fonts') if not font.endswith('.csv')]
-fonts = ['roya_bold']
+fonts = [font.split('.')[0] for font in os.listdir('../Fonts') if not font.endswith('.csv')]
+#fonts = ['roya_bold']
 templates = [os.path.basename(os.path.splitext(template)[0]) for template in os.listdir('../templates') if template.endswith('.png') and template not in ['tashrifat.png', 'template-sepah.png', 'template-police.png']]
 # templates = ['template-base']
 
 # Noises
 noises = os.listdir('../Noises')
 # transformations 
-transformations = ['rotate_right', 'rotate_left', 'zoom_in', 'zoom_out', 'prespective_transform']
+transformations = ['rotate_right', 'rotate_left']#, 'prespective_transform', 'zoom_in', 'zoom_out'
 
 # Count of permutations
 permutations = 1

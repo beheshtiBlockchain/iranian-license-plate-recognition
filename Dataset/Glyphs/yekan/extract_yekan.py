@@ -7,4 +7,5 @@ for name in F:
     # print name
     # F[name].export(filename)
     F[name].export(filename, 600)     # set height to 600 pixels
+F.close()
     

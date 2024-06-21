@@ -2,7 +2,8 @@ import os
 import glob
 import csv
 import subprocess
-
+import cv2 as cv
+import numpy as np
 # Fonts we want to extract glyphs from
 fonts = [font.split('.')[0] for font in os.listdir('../Fonts') if font.endswith('.ttf')]
 
@@ -16,12 +17,13 @@ for name in F:
     # print name
     # F[name].export(filename)
     F[name].export(filename, {pixelSize})     # set height to 600 pixels
+F.close()
     '''
 
 for font in fonts:
+    print(font)
     # Set font file address
     fontAddr = os.path.join('../Fonts/', font)
-    
     # Create font directory if not exists
     if not os.path.exists(font): os.mkdir(font)
     # Delete all files in the font directory
@@ -51,6 +53,13 @@ for font in fonts:
     # Removing unnecessary files
     # remove extras like extension and addressing of the files
     imageFiles = [os.path.basename(os.path.splitext(name)[0]) for name in glob.glob(os.path.join(font, '*.png'))]
+
+
+    im1 = cv.imread(os.path.join(font,"u0627.png"))
+    im3 = cv.imread(os.path.join(font,"uFED2.png"))
+    im2 = cv.imread(os.path.join(font,"uFEDF.png"))
+    img = np.hstack([im3[:,:-1], im2[:,1:], im1])
+    cv.imwrite(os.path.join(font,"u0627.png"), img)
     dotNameFiles = [os.path.basename(os.path.splitext(name)[0]) for name in glob.glob(os.path.join(font, '.*'))]
     # Mark which files to delete
     filesToKeep = [f'{name}.png' for name in nameMap.keys()]
@@ -60,4 +69,5 @@ for font in fonts:
         os.remove(os.path.join(font, _file))
     # Rename files according to namesMap.csv
     for glyphName in nameMap.keys():
-        os.rename(os.path.join(font, f'{glyphName}.png'), os.path.join(font, f'{nameMap[glyphName]}.png'))
+        if os.path.exists(os.path.join(font, f'{glyphName}.png')):
+            os.rename(os.path.join(font, f'{glyphName}.png'), os.path.join(font, f'{nameMap[glyphName]}.png'))
