@@ -44,7 +44,8 @@ we **Extract** Glyphs (Characters) of letters and numbers from `Teraffic`, `Roya
 - Python +3
 - [fontforge](https://github.com/fontforge/fontforge)
 - [ImageMagick](https://github.com/ImageMagick/ImageMagick) with  [PythonMagick](https://github.com/ImageMagick/PythonMagick)
-
+- Wand
+- opencv-python
 Here is an explanation on how image of glyphs are created:
 
 ### Extracting glyphs
@@ -71,26 +72,20 @@ now **run the `extract_glyphs.py` script**. it creates a folder for each font in
 
 ### Processing images
 
-After that, we use a `ImageMagick` wrapper for python called `PythonMagick` to remove the backgrounds and trim images.
+After that, we use a `ImageMagick` wrapper for python called `Wand` to remove the backgrounds and trim images.
 
-#### Installing `PythonMagick`
-
-##### Linux
+#### Installing `Wand` and `opencv`
 
 ```shell
-sudo apt install python3-pythonmagick
+pip install wand
+pip install opencv-python
 ```
-
-##### Windows
-
-To install PythonMagick on windows You can go to [this website](https://www.lfd.uci.edu/~gohlke/pythonlibs/), download the WHL file named `PythonMagick-0.9.12-cp37-none-win_amd64.whl`, and install it via `pip install <whl file>`.
-
 #### processing
 
 now **run the `process_glyphs.py` script**. it removes backgrounds and trim images to have no extra paddings for each glyph image.
 
 > This could be done in terminal using this command:
-> 
+>
 > `for %i in (*.png) do magick convert %i -transparent white -trim -gravity center -resize x65 %~ni_trim.png`
 
 
@@ -101,8 +96,7 @@ now **run the `process_glyphs.py` script**. it removes backgrounds and trim imag
 Different plate templates are used to represent the functionality and origin of the vehicle. you can find the images of these templates with numbers and letters removed, and a `psd` file containing all of these images in the `Templates` directory.
 
 ## Generated plates
-
-> Still on process...
+**run the `generate_plates.py` script**
 
 
 ## Model Specs.
