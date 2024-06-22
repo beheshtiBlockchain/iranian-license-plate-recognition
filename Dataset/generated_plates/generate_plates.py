@@ -14,18 +14,18 @@ letters = ['ALEF', 'BE', 'PE', 'TE', 'SE', 'JIM', 'CHE', 'HE', 'KHE', 'DAL', 'ZA
 #letters = ['AA', 'BA', 'PA', 'TA', 'SA', 'JA', 'CA', 'HA', 'KB', 'DA', 'ZA', 'RA', 'ZB', 'ZE', 'SB','SH', 'SC', 'ZC', 'TB', 'ZD', 'EA', 'GA', 'FA', 'GB', 'KA', 'GC', 'LA', 'MA', 'NA', 'VA', 'HB', 'YA']
 
 # Fonts and Templates
-fonts = [font.split('.')[0] for font in os.listdir('../Fonts') if not font.endswith('.csv')]
-#fonts = ['roya_bold']
-templates = [os.path.basename(os.path.splitext(template)[0]) for template in os.listdir('../templates') if template.endswith('.png') and template not in ['tashrifat.png', 'template-sepah.png', 'template-police.png']]
-# templates = ['template-base']
+# fonts = [font.split('.')[0] for font in os.listdir('../Fonts') if not font.endswith('.csv')]
+fonts = ['roya_bold']
+# templates = [os.path.basename(os.path.splitext(template)[0]) for template in os.listdir('../templates') if template.endswith('.png') and template not in ['tashrifat.png', 'template-sepah.png', 'template-police.png']]
+templates = ['template-base']
 
 # Noises
 noises = os.listdir('../Noises')
 # transformations 
-transformations = ['rotate_right', 'rotate_left']#, 'prespective_transform', 'zoom_in', 'zoom_out'
+transformations = []#['rotate_right', 'rotate_left']#, 'prespective_transform', 'zoom_in', 'zoom_out'
 
 # Count of permutations
-permutations = 1
+permutations = 100
 
 # Generateplate array from string 
 # (37GAF853 -> ['3', '7', 'GAF', '8', '5', '3'])
@@ -76,32 +76,32 @@ def applyTransforms (plate):
     plate = np.array(plate)
     
     # Rotating to clockwise
-    for _ in range(3):
-        result = imutils.rotate_bound(plate, random.randint(2,15))
-        result = Image.fromarray(result)
-        transformedTemplates.append(result)
+    # for _ in range(3):
+    #     result = imutils.rotate_bound(plate, random.randint(2,15))
+    #     result = Image.fromarray(result)
+    #     transformedTemplates.append(result)
 
-    # Rotating to anticlockwise
-    for _ in range(3):
-        result = imutils.rotate_bound(plate, random.randint(-15,-2))
-        result = Image.fromarray(result)
-        transformedTemplates.append(result)
+    # # Rotating to anticlockwise
+    # for _ in range(3):
+    #     result = imutils.rotate_bound(plate, random.randint(-15,-2))
+    #     result = Image.fromarray(result)
+    #     transformedTemplates.append(result)
     
-    # Scaling up
-    for _ in range(3):
-        height, width, _ = plate.shape
-        randScale = random.uniform(1.1, 1.3)
-        result = cv2.resize(plate, None, fx=randScale, fy=randScale, interpolation = cv2.INTER_CUBIC)
-        result = Image.fromarray(result)
-        transformedTemplates.append(result)
+    # # Scaling up
+    # for _ in range(3):
+    #     height, width, _ = plate.shape
+    #     randScale = random.uniform(1.1, 1.3)
+    #     result = cv2.resize(plate, None, fx=randScale, fy=randScale, interpolation = cv2.INTER_CUBIC)
+    #     result = Image.fromarray(result)
+    #     transformedTemplates.append(result)
     
-    # Scaling down
-    for _ in range(3):
-        height, width, _ = plate.shape
-        randScale = random.uniform(0.2, 0.6)
-        result = cv2.resize(plate, None, fx=randScale, fy=randScale, interpolation = cv2.INTER_CUBIC)
-        result = Image.fromarray(result)
-        transformedTemplates.append(result)
+    # # Scaling down
+    # for _ in range(3):
+    #     height, width, _ = plate.shape
+    #     randScale = random.uniform(0.2, 0.6)
+    #     result = cv2.resize(plate, None, fx=randScale, fy=randScale, interpolation = cv2.INTER_CUBIC)
+    #     result = Image.fromarray(result)
+    #     transformedTemplates.append(result)
 
     # # Adding perspective transformations
     # for _ in range(3):
@@ -118,7 +118,7 @@ def applyTransforms (plate):
 
 
 idCounter = 0
-fontsProgBar = tqdm(total=len(fonts)*len(templates)*permutations*len(noises)*(len(transformations)-1)*3, desc='Generating Plate...')
+fontsProgBar = tqdm(total=len(fonts)*len(templates)*permutations, desc='Generating Plate...')#*len(noises)*(len(transformations)-1)*3
 for font in fonts:
     # Create font directory if not exists
     if not os.path.exists(font): os.mkdir(font)
@@ -126,11 +126,16 @@ for font in fonts:
 
     # Getting the letters list from nameMap csv
     letters = []
+    petters = []
     with open(f'../Fonts/{font}_namesMap.csv') as nameMapCsv:
         reader = csv.reader(nameMapCsv)
         next(reader) # Skipping header
-        letters = [rows[1] for rows in reader]
-
+        petters = [rows[1] for rows in reader]
+        letters = [rows for rows in petters if not rows.isnumeric()]
+        with open("classes.txt", "w+") as filo:
+            for row in petters:
+                filo.write(row+"\n")
+        
     for template in templates:
         for i in range(permutations):
             idCounter += 1
@@ -144,11 +149,26 @@ for font in fonts:
 
             # Get Glyph images of plate characters
             glyphImages = []
+            glyphNames = []
             for glyph in plate:
                 glyphImage = Image.open(getGlyphAddress(font, glyph)).convert("RGBA")
                 # number.putalpha(255)
+                
+                if glyph.isnumeric():
+                    # if glyph == '0':
+                    #     glyphImage = glyphImage.resize((35, 35))
+                    if glyph == '1': 
+                        glyphImage = glyphImage.resize((24 if "a" in plate else 36, 70))
+                    else: 
+                        glyphImage = glyphImage.resize((43 if "a" in plate else 55, 70))
+                else:
+                    
+                    if glyph == "a" or glyph == "ALEF":
+                        glyphImage = glyphImage.resize((120,80))
+                    else:
+                        glyphImage = glyphImage.resize((60,80))
                 glyphImages.append(glyphImage)
-
+                glyphNames.append(glyph)
             # Create a blank image with size of templates 
             # and add the background and glyph images
             newPlate = Image.new('RGBA', (600,132), (0, 0, 0, 0))
@@ -156,31 +176,44 @@ for font in fonts:
             newPlate.paste(background, (0,0))
             # adding glyph images with 11 pixel margin
             w = 0
-            for i, glyph in enumerate(glyphImages):
-                if i == 2:
-                    newPlate.paste(glyph, (70 + w,30), mask=glyph)
-                else: newPlate.paste(glyph, (70 + w,25), mask=glyph)
-                w += glyph.size[0] + 11
             
             idCounter += 1
+            name = f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}"
+
+            with open(f"{name}.txt", "w+") as label:
+                for i, glyph in enumerate(glyphImages):
+                    
+                    if i == 2:
+                        label.write(f"{petters.index(glyphNames[i])} {((70+w)+glyph.size[0]/2.)/600.} {(30.+glyph.size[1]/2.)/132.} {glyph.size[0]/600.} {glyph.size[1]/132.}\n")
+                        newPlate.paste(glyph, (70 + w,30), mask=glyph)
+                    else: 
+                        
+                        # if glyphNames[i] == '0':
+                        #     label.write(f"{petters.index(glyphNames[i])} {((70+w)+glyph.size[0]/2.)/600.} {(30.+glyph.size[1]/2.)/132.} {glyph.size[0]/600.} {glyph.size[1]/132.}\n")
+                        #     newPlate.paste(glyph, (70 + w,30), mask=glyph)
+                        # else:
+                        label.write(f"{petters.index(glyphNames[i])} {((70+w)+glyph.size[0]/2.)/600.} {(25.+glyph.size[1]/2.)/132.} {glyph.size[0]/600.} {glyph.size[1]/132.}\n")
+                        newPlate.paste(glyph, (70 + w,25), mask=glyph)
+                    w += glyph.size[0] + 11
+            
             # Save Simple Plate
             _newPlate = newPlate.resize((312,70), Image.ANTIALIAS)
             fontsProgBar.update(1)
-            _newPlate.save(f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}.png")
+            _newPlate.save(f"{name}.png")
             # newPlate.show(f"{font}/{plateName}_{template.split('-')[1]}.png")
-            idCounter += 1
-            noisyTemplates = applyNoise(newPlate)
-            for noisyTemplate in noisyTemplates:
-                idCounter += 1
-                fontsProgBar.update(1)
-                _noisyTemplate = noisyTemplate.resize((312,70), Image.ANTIALIAS)
-                _noisyTemplate.save(f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}.png")
-                transformedTemplates = applyTransforms(noisyTemplate)
-                for transformedTemplate in transformedTemplates:
-                    idCounter += 1
-                    _transformedTemplate = transformedTemplate.resize((312,70), Image.ANTIALIAS)
-                    fontsProgBar.update(1)
-                    _transformedTemplate.save(f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}.png")
+            # idCounter += 1
+            # noisyTemplates = applyNoise(newPlate)
+            # for noisyTemplate in noisyTemplates:
+            #     idCounter += 1
+            #     fontsProgBar.update(1)
+            #     _noisyTemplate = noisyTemplate.resize((312,70), Image.ANTIALIAS)
+            #     _noisyTemplate.save(f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}.png")
+            #     transformedTemplates = applyTransforms(noisyTemplate)
+            #     for transformedTemplate in transformedTemplates:
+            #         idCounter += 1
+            #         _transformedTemplate = transformedTemplate.resize((312,70), Image.ANTIALIAS)
+            #         fontsProgBar.update(1)
+            #         _transformedTemplate.save(f"{font}/{plateName}_{template.split('-')[1]}{random.randint(0,20)}{idCounter}.png")
         fontsProgBar.update(1)
     fontsProgBar.update(1)
 fontsProgBar.update(1)

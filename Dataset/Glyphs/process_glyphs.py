@@ -30,16 +30,20 @@ for font in fonts:
         twenty_percent = int(65535*0.2)  # Note: percent must be calculated from Quantum
         glyphImage.transparent_color(white, alpha=0.0, fuzz=twenty_percent)
         # Trim the image
-        glyphImage.trim(color=Color('rgba(0,0,0,0)'),fuzz=0)
+        if os.path.splitext(image)[0] != '0':
+        	glyphImage.trim(color=Color('rgba(0,0,0,0)'),fuzz=0)
         
         # If glyph is a Number resize it to 87 pixel height(35 for zero).
         # otherwise 58 pixel height.
         if os.path.splitext(image)[0].isnumeric():
-            if os.path.splitext(image)[0] == '0': glyphImage.resize(None, 35)
-            else: 
-                glyphImage.resize(67, 70)
+            #if os.path.splitext(image)[0] == '0': glyphImage.resize(35, 35)
+            #else: 
+            glyphImage.resize(67, 70)
         else:
-            glyphImage.resize(90, 70)
+            if os.path.splitext(image)[0] == 'a' or os.path.splitext(image)[0] == "ALEF":
+                glyphImage.resize(120, 70)
+            else:
+            	glyphImage.resize(90, 70)
         glyphImage.save(filename=os.path.join(font, f'{image.split(".")[0]}_trim.png'))
 
         glyphProgBar.update(1)
