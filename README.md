@@ -96,7 +96,7 @@ now **run the `process_glyphs.py` script**. it removes backgrounds and trim imag
 Different plate templates are used to represent the functionality and origin of the vehicle. you can find the images of these templates with numbers and letters removed, and a `psd` file containing all of these images in the `Templates` directory.
 
 ## Generated plates
-**run the `generate_plates.py` script**
+**run the `generate_plates.py` script** to generate as many plates as the variable **permutations**.
 
 
 ## Model Specs.
